@@ -48,29 +48,46 @@
   const fetchPrecipitation = (coor) => {
     const { latitude, longitude } = coor;
 
-    const URL = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=precipitation&forecast_days=1`;
+    const URL = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=is_day,precipitation&forecast_days=1`;
 
     return fetch(URL)
       .then((r) => r.json())
       .then((res) => ({
+        ...coor,
         precipitation: res.current.precipitation,
         time: res.current.time,
-        ...coor,
+        isDay: res.current.is_day,
+        time: new Date().toString(),
       }));
   };
+
+  const fetchPrecipitationMock = (coor) =>
+    new Promise((r) => {
+      setTimeout(() => {
+        r({
+          ...coor,
+          isDay: false,
+          precipitation: 0,
+        });
+      }, 1000);
+    });
 
   getLocation()
     .then((coor) => fetchPrecipitation(coor))
     .then((r) => {
       const resultCont = document.getElementById('result');
       const dataCont = document.getElementById('data');
+      const rainCont = document.getElementById('rain-container');
 
-      if (r.precipitation === 0) {
-        const el = document.getElementById('rain-container');
+      const dayClass = `${r.isDay ? 'day' : 'night'}-${
+        r.precipitation > 0 ? 'rain' : 'clear'
+      }`;
+      rainCont.classList.add(dayClass);
 
-        Rain.attachToElement(el, {
-          width: el.clientWidth,
-          height: el.clientHeight,
+      if (r.precipitation > 0) {
+        Rain.attachToElement(rainCont, {
+          width: rainCont.clientWidth,
+          height: rainCont.clientHeight,
         });
         resultCont.innerHTML = 'ДА';
       } else {

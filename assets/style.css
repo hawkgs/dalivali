@@ -5,6 +5,7 @@ body {
   font-weight: 200;
   font-style: normal;
   font-variation-settings: 'slnt' 0;
+  background: #3c55a8;
 }
 
 a {
@@ -15,7 +16,49 @@ a {
   position: relative;
   width: 100vw;
   height: 100vh;
-  background: #1d3172;
+}
+
+#rain-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  opacity: 0;
+  transition: opacity 1s ease-out;
+}
+
+#rain-container.day-clear::before {
+  background: linear-gradient(
+    180deg,
+    rgb(67, 122, 210) 0%,
+    rgb(61, 178, 201) 100%
+  );
+  opacity: 1;
+}
+
+#rain-container.day-rain::before {
+  background: linear-gradient(
+    180deg,
+    rgb(98, 117, 146) 0%,
+    rgb(121, 153, 159) 100%
+  );
+  opacity: 1;
+}
+
+#rain-container.night-clear::before {
+  background: linear-gradient(
+    180deg,
+    rgb(14, 35, 64) 0%,
+    rgb(22, 73, 143) 100%
+  );
+  opacity: 1;
+}
+
+#rain-container.night-rain::before {
+  background: linear-gradient(180deg, rgb(34, 42, 53) 0%, rgb(41, 63, 93) 100%);
+  opacity: 1;
 }
 
 #result {
