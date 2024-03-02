@@ -37,13 +37,15 @@
     width: 640,
     height: 480,
     fps: 30,
-    gravity: 4, // Note(Georgi): Using positive Y since the Canvas Y axis is inverted (top-left corner is 0,0).
+    gravity: 6, // Note(Georgi): Using positive Y since the Canvas Y axis is inverted (top-left corner is 0,0).
     dragMagnitude: 0.1,
     terminalVelocityRate: 10,
-    raindropTtl: 1500,
+    raindropTtl: 1200,
     rainfallIntensity: 6,
     offScreenOffset: 200,
   };
+
+  const RAINDROP_IMG_URL = 'assets/raindrop.png';
 
   function __vectorize(arg) {
     if (arg.x !== undefined && arg.y !== undefined) {
@@ -274,30 +276,37 @@
     rain.applyForceFactory(dragForceFactory);
 
     const ctx = canvas.getContext('2d');
+    let raindropImg = null;
 
-    function draw() {
+    function getRaindropImg() {
+      if (raindropImg) {
+        return Promise.resolve(raindropImg);
+      }
+      return new Promise((res) => {
+        const img = new Image();
+        img.onload = () => {
+          raindropImg = img;
+          res(raindropImg);
+        };
+        img.src = RAINDROP_IMG_URL;
+      });
+    }
+
+    async function draw() {
+      const img = await getRaindropImg();
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       rain.update();
 
-      ctx.beginPath();
-      ctx.lineWidth = 1;
-      ctx.lineCap = 'round';
-      ctx.strokeStyle = `rgba(141, 190, 203, 0.9)`;
-
-      for (const sf of rain.drops) {
-        ctx.moveTo(sf.location.x, sf.location.y);
-        ctx.lineTo(sf.location.x, sf.location.y + sf.size);
-
-        ctx.stroke();
+      for (const d of rain.drops) {
+        ctx.drawImage(img, d.location.x, d.location.y);
       }
-
-      ctx.fill();
     }
 
     /**
      * @param {number} fpsInterval
      * @param {number} then
      * @param {number} elapsed
+     * @param {Image} raindropImg
      */
     function animate(fpsInterval, then, elapsed) {
       requestAnimationFrame(() => animate(fpsInterval, then, elapsed));
