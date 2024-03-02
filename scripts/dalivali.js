@@ -80,7 +80,7 @@
     });
 
   getLocation()
-    .then((coor) => fetchPrecipitationMock(coor))
+    .then((coor) => fetchPrecipitation(coor))
     .then((r) => {
       const resultCont = document.getElementById('result');
       const dataCont = document.getElementById('data');
