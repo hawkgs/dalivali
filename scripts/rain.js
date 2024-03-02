@@ -186,10 +186,6 @@
       this.config = config;
       this.drops = [];
       this.forceFactories = [];
-
-      setInterval(() => {
-        console.log('Rendered drops:', this.drops.length);
-      }, 1500);
     }
 
     applyForceFactory(factory) {
