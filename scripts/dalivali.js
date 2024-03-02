@@ -57,43 +57,55 @@
         precipitation: res.current.precipitation,
         time: res.current.time,
         isDay: res.current.is_day,
-        time: new Date().toString(),
       }));
   };
 
+  /**
+   * Mock fetch function for testing purposes.
+   *
+   * @param {Coordinates} coor
+   * @returns
+   */
   const fetchPrecipitationMock = (coor) =>
     new Promise((r) => {
+      const REQUEST_DELAY = 2000;
       setTimeout(() => {
         r({
           ...coor,
           isDay: false,
-          precipitation: 0,
+          precipitation: 10,
+          time: new Date().toString(),
         });
-      }, 1000);
+      }, REQUEST_DELAY);
     });
 
   getLocation()
-    .then((coor) => fetchPrecipitation(coor))
+    .then((coor) => fetchPrecipitationMock(coor))
     .then((r) => {
       const resultCont = document.getElementById('result');
       const dataCont = document.getElementById('data');
       const rainCont = document.getElementById('rain-container');
 
+      // Add time-aware background
       const dayClass = `${r.isDay ? 'day' : 'night'}-${
         r.precipitation > 0 ? 'rain' : 'clear'
       }`;
       rainCont.classList.add(dayClass);
 
+      // Setup rainfall
       if (r.precipitation > 0) {
         Rain.attachToElement(rainCont, {
           width: rainCont.clientWidth,
           height: rainCont.clientHeight,
+          // Note(Georgi): Keep rainfall intensity below 6
+          rainfallIntensity: Math.min(r.precipitation, 6),
         });
         resultCont.innerHTML = 'ДА';
       } else {
         resultCont.innerHTML = 'НЕ';
       }
 
+      // Display coordinates and time of the forecast
       const dateObj = new Date(r.time);
       const date = dateObj.toLocaleDateString();
       const timeArr = dateObj.toLocaleTimeString().split(':');

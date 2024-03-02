@@ -286,7 +286,7 @@
 
       for (const sf of rain.drops) {
         ctx.moveTo(sf.location.x, sf.location.y);
-        ctx.lineTo(sf.location.x, sf.location.y + sf.size * 2);
+        ctx.lineTo(sf.location.x, sf.location.y + sf.size);
 
         ctx.stroke();
       }
