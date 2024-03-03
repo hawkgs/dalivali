@@ -13,9 +13,14 @@ a {
 }
 
 #rain-container {
-  position: relative;
-  width: 100vw;
-  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 #rain-container::before {
@@ -62,14 +67,10 @@ a {
 }
 
 #result {
-  position: absolute;
-  top: 50vh;
-  transform: translateY(-50%);
-  width: 100%;
-  text-align: center;
   font-size: 96px;
   color: #fff;
   text-shadow: 0 2px 3px rgba(0, 0, 0, 0.5);
+  z-index: 1;
 }
 
 footer {

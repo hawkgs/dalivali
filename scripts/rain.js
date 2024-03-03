@@ -127,7 +127,12 @@
     },
 
     update: (drop) => {
-      if (drop.atRest || drop.location.y >= drop.config.height - drop.size) {
+      const DROP_H_OFFSET = 3;
+
+      if (
+        drop.atRest ||
+        drop.location.y >= drop.config.height - DROP_H_OFFSET
+      ) {
         drop.atRest = true;
         return;
       }
@@ -145,7 +150,7 @@
         -c.offScreenOffset,
         c.width + c.offScreenOffset,
         0,
-        c.height - drop.size,
+        c.height - DROP_H_OFFSET,
       );
 
       Vector.multiply(drop.acceleration, 0);
