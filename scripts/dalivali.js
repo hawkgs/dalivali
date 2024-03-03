@@ -4,7 +4,7 @@
   /**
    * @typedef {Object} Coordinates
    * @property {number} latitude
-   * @property {Vector} longitude
+   * @property {number} longitude
    */
 
   const SOFIA_BG_COOR = {
@@ -48,7 +48,7 @@
   const fetchPrecipitation = (coor) => {
     const { latitude, longitude } = coor;
 
-    const URL = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=is_day,precipitation&forecast_days=1`;
+    const URL = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=is_day,precipitation&forecast_days=1&timezone=auto`;
 
     return fetch(URL)
       .then((r) => r.json())
@@ -107,11 +107,15 @@
 
       // Display coordinates and time of the forecast
       const dateObj = new Date(r.time);
-      const date = dateObj.toLocaleDateString();
-      const timeArr = dateObj.toLocaleTimeString().split(':');
-      timeArr.pop();
-      const time = timeArr.join(':');
+      const datetime = new Intl.DateTimeFormat('bg-BG', {
+        year: 'numeric',
+        month: 'numeric',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+        hour12: false,
+      }).format(dateObj);
 
-      dataCont.innerHTML = `lat. ${r.latitude} &ensp; long. ${r.longitude} &ensp; ${date} ${time}`;
+      dataCont.innerHTML = `lat. ${r.latitude} &ensp; long. ${r.longitude} &ensp; ${datetime}`;
     });
 })();
