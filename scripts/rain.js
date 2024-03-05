@@ -17,7 +17,7 @@
    * @property {number} gravity - Gravity. Decimal numbers less than 1 render realistic results.
    * @property {number} dragMagnitude - Drag magnitude. Decimal numbers less than 1 render realistic results.
    * @property {number} terminalVelocityRate - The rate represents the max velocity based on the mass of the raindrop.
-   * @property {number} raindropTtl - Raindrop time to live in miliseconds.
+   * @property {number} raindropTtlAtRest - Raindrop time to live after reaching at rest state; in miliseconds.
    * @property {number} rainfallIntensity - Rainfall intensity. Unbound integer. Keep within 1-50.
    * @property {number} offScreenOffset - Offset negative and positive X axis rainfall offset in pixels.
    */
@@ -40,7 +40,7 @@
     gravity: 6, // Note(Georgi): Using positive Y since the Canvas Y axis is inverted (top-left corner is 0,0).
     dragMagnitude: 0.1,
     terminalVelocityRate: 10,
-    raindropTtl: 1200,
+    raindropTtlAtRest: 500,
     rainfallIntensity: 6,
     offScreenOffset: 200,
   };
@@ -117,8 +117,7 @@
       size: size,
       config: config,
       mass: size * size,
-      createdAt: Date.now(),
-      atRest: false,
+      atRestTime: null,
     }),
 
     applyForce: (drop, force) => {
@@ -130,10 +129,12 @@
       const DROP_H_OFFSET = 3;
 
       if (
-        drop.atRest ||
+        drop.atRestTime ||
         drop.location.y >= drop.config.height - DROP_H_OFFSET
       ) {
-        drop.atRest = true;
+        if (!drop.atRestTime) {
+          drop.atRestTime = new Date();
+        }
         return;
       }
 
@@ -193,6 +194,10 @@
       this.config = config;
       this.drops = [];
       this.forceFactories = [];
+
+      setInterval(() => {
+        console.log('Drops:', this.drops.length);
+      }, 1500);
     }
 
     applyForceFactory(factory) {
@@ -207,9 +212,12 @@
       for (let i = 0; i < this.drops.length; i++) {
         const drop = this.drops[i];
 
-        if (Date.now() - drop.createdAt >= this.config.raindropTtl) {
+        if (
+          drop.atRestTime &&
+          Date.now() - drop.atRestTime >= this.config.raindropTtlAtRest
+        ) {
           markedForDestruct.push(i);
-        } else if (!drop.atRest) {
+        } else {
           for (const factory of this.forceFactories) {
             Raindrop.applyForce(
               drop,

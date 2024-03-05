@@ -73,7 +73,7 @@
         r({
           ...coor,
           isDay: false,
-          precipitation: 10,
+          precipitation: 6,
           time: new Date().toString(),
         });
       }, REQUEST_DELAY);
