@@ -17,7 +17,7 @@
    * @property {number} gravity - Gravity. Decimal numbers less than 1 render realistic results.
    * @property {number} dragMagnitude - Drag magnitude. Decimal numbers less than 1 render realistic results.
    * @property {number} terminalVelocityRate - The rate represents the max velocity based on the mass of the raindrop.
-   * @property {number} raindropTtlAtRest - Raindrop time to live after reaching at rest state; in miliseconds.
+   * @property {number} raindropTtlAtRest - Raindrop time to live after reaching "at rest" state; In miliseconds.
    * @property {number} rainfallIntensity - Rainfall intensity. Unbound integer. Keep within 1-50.
    * @property {number} offScreenOffset - Offset negative and positive X axis rainfall offset in pixels.
    */
@@ -194,10 +194,6 @@
       this.config = config;
       this.drops = [];
       this.forceFactories = [];
-
-      setInterval(() => {
-        console.log('Drops:', this.drops.length);
-      }, 1500);
     }
 
     applyForceFactory(factory) {
