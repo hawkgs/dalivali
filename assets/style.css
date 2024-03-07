@@ -46,8 +46,8 @@ a {
 #rain-container.day-rain::before {
   background: linear-gradient(
     180deg,
-    rgb(98, 117, 146) 0%,
-    rgb(121, 153, 159) 100%
+    rgb(92, 105, 125) 0%,
+    rgb(106, 126, 131) 100%
   );
   opacity: 1;
 }
